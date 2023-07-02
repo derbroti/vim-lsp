@@ -58,7 +58,7 @@ function! s:handle_signature_help(server, data) abort
             let l:parameter = get(l:parameters, l:parameter_index, {})
             let l:parameter_label = s:get_parameter_label(l:signature, l:parameter)
             if !empty(l:parameter_label)
-                let l:label = substitute(l:label, '\V\(' . escape(l:parameter_label, '\/?') . '\)', '`\1`', 'g')
+                let l:label = substitute(l:label, '\V\(' . escape(l:parameter_label, '\/?') . '\)', '_\1_', 'g')
             endif
         endif
 
