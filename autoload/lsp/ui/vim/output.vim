@@ -144,7 +144,8 @@ function! lsp#ui#vim#output#floatingpreview(data) abort
     elseif s:use_vim_popup
         let l:options = {
             \ 'moved': 'any',
-            \ 'border': [1, 1, 1, 1],
+            \ 'border': [0,0,0,0],
+            \ 'padding': [0,1,0,1],
             \ 'callback': function('s:vim_popup_closed')
             \ }
 
