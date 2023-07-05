@@ -419,7 +419,7 @@ function! lsp#ui#vim#output#append(data, lines, syntax_lines) abort
             call lsp#ui#vim#output#append(l:entry, a:lines, a:syntax_lines)
         endfor
 
-        return 'markdown'
+        return 'plaintext'
     elseif type(a:data) ==# type('')
         call extend(a:lines, split(s:escape_string_for_display(a:data), "\n", v:true))
         return 'markdown'
