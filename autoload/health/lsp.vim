@@ -19,7 +19,7 @@ function! health#lsp#check() abort
         if l:report.status == 'running'
             call health#report_ok(l:status_msg)
         elseif l:report.status == 'failed'
-            call v:lua.vim.health.error(l:status_msg, 'See :help g:lsp_log_verbose to debug server failure.')
+            call health#report_error(l:status_msg, 'See :help g:lsp_log_verbose to debug server failure.')
         else
             call health#report_warn(l:status_msg)
         endif
@@ -51,7 +51,7 @@ function! health#lsp#check() abort
             endif
             let l:msg .= printf("### workspace_config\n```json\n%s\n```", l:cfg)
         endif
-        call v:lua.vim.health.info(l:msg)
+        call health#report_info(l:msg)
     endfor
 
     call health#report_start('Performance')
