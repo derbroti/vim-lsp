@@ -32,7 +32,8 @@ endfunction
 
 function! s:echo(diagnostic) abort
     if !empty(a:diagnostic) && has_key(a:diagnostic, 'message')
-        call lsp#utils#echo_with_truncation('LSP: '. substitute(a:diagnostic['message'], '\n\+', ' ', 'g'))
+        let l:hl_group = lsp#internal#diagnostics#signs#_get_sign_hl_group_name(get(a:diagnostic, 'severity', 0))
+        call lsp#utils#echo_with_truncation_and_highlight(' LSP: '. substitute(a:diagnostic['message'], '\n\+', ' ', 'g'), l:hl_group)
         let s:displaying_message = 1
     elseif get(s:, 'displaying_message', 0)
         call lsp#utils#echo_with_truncation('')

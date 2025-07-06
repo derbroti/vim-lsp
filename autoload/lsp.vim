@@ -706,7 +706,7 @@ function! s:ensure_init(buf, server_name, cb) abort
     \     'trace': 'off',
     \   },
     \ }
-    
+
     let l:workspace_capabilities = get(l:capabilities, 'workspace', {})
     if get(l:workspace_capabilities, 'workspaceFolders', v:false)
         " TODO: extract folder name for l:root_uri

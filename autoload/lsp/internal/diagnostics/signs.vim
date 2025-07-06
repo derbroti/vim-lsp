@@ -9,6 +9,10 @@ let s:severity_sign_names_mapping = {
     \ 4: 'LspHint',
     \ }
 
+function! lsp#internal#diagnostics#signs#_get_sign_hl_group_name(severity)
+    return get(s:severity_sign_names_mapping, a:severity, 'None') . 'Text'
+endfunction
+
 if !hlexists('LspErrorText')
     highlight link LspErrorText Error
 endif
@@ -31,7 +35,7 @@ let s:Buffer = vital#lsp#import('VS.Vim.Buffer')
 function! lsp#internal#diagnostics#signs#_enable() abort
     " don't even bother registering if the feature is disabled
     if !lsp#utils#_has_signs() | return | endif
-    if !g:lsp_diagnostics_signs_enabled | return | endif 
+    if !g:lsp_diagnostics_signs_enabled | return | endif
 
     if s:enabled | return | endif
     let s:enabled = 1
@@ -78,10 +82,14 @@ endfunction
 " Set default sign text to handle case when user provides empty dict
 function! s:define_sign(sign_name, sign_default_text, sign_options) abort
     let l:options = {
-        \ 'text': get(a:sign_options, 'text', a:sign_default_text),
         \ 'texthl': a:sign_name . 'Text',
+        \ 'numhl' : a:sign_name . 'Text',
         \ 'linehl': a:sign_name . 'Line',
         \ }
+    let l:sign_text = get(a:sign_options, 'text', a:sign_default_text)
+    if !empty(l:sign_text)
+        let l:options['text'] = l:sign_text
+    endif
     let l:sign_icon = get(a:sign_options, 'icon', '')
     if !empty(l:sign_icon)
         let l:options['icon'] = l:sign_icon

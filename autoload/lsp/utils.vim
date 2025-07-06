@@ -300,7 +300,7 @@ function! lsp#utils#warning(msg) abort
 endfunction
 
 
-function! lsp#utils#echo_with_truncation(msg) abort
+function! lsp#utils#echo_with_truncation_and_highlight(msg, hl_group) abort
     let l:msg = a:msg
 
     if &laststatus == 0 || (&laststatus == 1 && tabpagewinnr(tabpagenr(), '$') == 1)
@@ -321,7 +321,15 @@ function! lsp#utils#echo_with_truncation(msg) abort
         let l:msg = l:msg[:l:winwidth - 5] . '...'
     endif
 
-    exec 'echo l:msg'
+    if !empty(a:hl_group)
+        exec 'echohl ' . a:hl_group . ' | echo l:msg | echohl None'
+    else
+        exec 'echo l:msg'
+    endif
+endfunction
+
+function! lsp#utils#echo_with_truncation(msg) abort
+    call lsp#utils#echo_with_truncation_and_highlight(a:msg, '')
 endfunction
 
 " Convert a byte-index (1-based) to a character-index (0-based)

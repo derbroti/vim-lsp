@@ -303,7 +303,7 @@ function! s:handle_location(ctx, server, type, data) abort "ctx = {counter, list
 
             if len(a:ctx['list']) == 1 && a:ctx['jump_if_one'] && !a:ctx['in_preview']
                 call lsp#utils#location#_open_vim_list_item(l:loc, a:ctx['mods'])
-                echo 'Retrieved ' . a:type
+                " echo 'Retrieved ' . a:type
                 redraw
             elseif !a:ctx['in_preview']
                 if get(a:ctx, 'add_tree', v:false)

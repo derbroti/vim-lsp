@@ -82,7 +82,7 @@ function! lsp#internal#document_hover#under_cursor#getpreviewwinid() abort
 endfunction
 
 function! s:show_hover(ui, server_name, request, response) abort
-    if !has_key(a:response, 'result') || empty(a:response['result']) || 
+    if !has_key(a:response, 'result') || empty(a:response['result']) ||
         \ empty(a:response['result']['contents'])
         call lsp#utils#error('No hover information found in server - ' . a:server_name)
         return
@@ -114,6 +114,7 @@ function! s:show_preview_window(server_name, request, response) abort
     execute 'resize '.min([len(l:lines), &previewheight])
     set previewwindow
     setlocal conceallevel=2
+    setlocal concealcursor=n
     setlocal bufhidden=hide
     setlocal nobuflisted
     setlocal buftype=nofile

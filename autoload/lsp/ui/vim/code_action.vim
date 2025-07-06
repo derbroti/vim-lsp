@@ -138,7 +138,7 @@ function! s:handle_code_action(ui, ctx, server_name, command_id, sync, query, bu
 
     if lsp#utils#_has_popup_menu() && a:ui ==? 'float'
         call lsp#internal#ui#popupmenu#open({
-            \   'title': 'Code actions',
+            \   'title': ' Code actions ',
             \   'items': mapnew(l:items, { idx, item -> item.title}),
             \   'pos': 'topleft',
             \   'line': 'cursor+1',

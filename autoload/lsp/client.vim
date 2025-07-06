@@ -408,6 +408,7 @@ function! s:on_response_native(ctx, request, channel, response) abort
             call a:ctx['opts']['on_notification'](a:ctx['id'], l:on_notification_data, 'on_notification')
         catch
             call lsp#log('s:on_response_native client option on_notification() error', v:exception, v:throwpoint)
+            call lsp#utils#error(v:exception)
         endtry
     endif
     if has_key(a:ctx['on_notifications'], a:request['id'])
@@ -416,6 +417,7 @@ function! s:on_response_native(ctx, request, channel, response) abort
             call a:ctx['on_notifications'][a:request['id']](a:ctx['id'], l:on_notification_data, 'on_notification')
         catch
             call lsp#log('s:on_response_native client request on_notification() error', v:exception, v:throwpoint, a:request, a:response)
+            call lsp#utils#error(v:exception)
         endtry
         unlet a:ctx['on_notifications'][a:response['id']]
         if has_key(a:ctx['requests'], a:response['id'])
