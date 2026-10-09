@@ -169,6 +169,8 @@ function! lsp#ui#vim#output#floatingpreview(data) abort
         let l:borderchars = get(g:, 'lsp_popup_borderchars', [])
         if !empty(l:borderchars)
             let l:options['borderchars'] = l:borderchars
+            " let l:options['border'] = []
+            echom "xxx".&ft
         endif
 
         let s:winid = popup_atcursor('...', l:options)
@@ -431,6 +433,10 @@ function! lsp#ui#vim#output#preview(server, data, options) abort
         call s:import_modules()
         call s:Window.do(s:winid, {->s:Markdown.apply()})
     endif
+
+    "if l:ft !=# 'sighelp'
+    "    call popup_setoptions(s:winid, {'border': []})
+    "endif
 
     if !g:lsp_preview_keep_focus
         " set the focus to the preview window

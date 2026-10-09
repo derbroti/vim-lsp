@@ -4,7 +4,7 @@ let s:enabled = 0
 function! lsp#internal#diagnostics#float#_enable() abort
     " don't even bother registering if the feature is disabled
     if !lsp#ui#vim#output#float_supported() | return | endif
-    if !g:lsp_diagnostics_float_cursor | return | endif 
+    if !g:lsp_diagnostics_float_cursor | return | endif
 
     if s:enabled | return | endif
     let s:enabled = 1
@@ -65,11 +65,11 @@ endfunction
 function! s:show_float(diagnostic) abort
     if !empty(a:diagnostic) && has_key(a:diagnostic, 'message')
         let l:doc_win = s:get_doc_win()
-        " Update contents. 
+        " Update contents.
         call deletebufline(l:doc_win.get_bufnr(), 1, '$')
         call setbufline(l:doc_win.get_bufnr(), 1, lsp#utils#_split_by_eol(a:diagnostic['message']))
 
-        " Compute size. 
+        " Compute size.
         if g:lsp_float_max_width >= 1
             let l:maxwidth = g:lsp_float_max_width
         elseif g:lsp_float_max_width == 0
@@ -85,7 +85,7 @@ function! s:show_float(diagnostic) abort
         " Compute position.
         let l:pos = s:compute_position(l:size)
 
-        " Open window. 
+        " Open window.
         call l:doc_win.open({
         \   'row': l:pos[0],
         \   'col': l:pos[1],

@@ -1,5 +1,15 @@
 " vint: -ProhibitUnusedVariable
 let s:debounce_timer_id = 0
+let s:suppressed = 0
+
+function! lsp#ui#vim#signature_help#suppress() abort
+    let s:suppressed = 1
+    call timer_stop(s:debounce_timer_id)
+    let l:winid = lsp#ui#vim#output#getpreviewwinid()
+    if l:winid > 0
+        call popup_close(l:winid)
+    endif
+endfunction
 
 function! s:not_supported(what) abort
     return lsp#utils#error(a:what.' not supported for '.&filetype)
@@ -35,6 +45,8 @@ function! s:handle_signature_help(server, data) abort
         return
     endif
 
+    if s:suppressed | return | endif
+
     if !has_key(a:data['response'], 'result')
         return
     endif
@@ -64,7 +76,7 @@ function! s:handle_signature_help(server, data) abort
 
         let l:contents = [l:label]
 
-        if exists('l:parameter')
+        if exists('l:parameter') && ! get(g:, 'lsp_signature_help_label_only', 0)
             let l:parameter_doc = s:get_parameter_doc(l:parameter)
             if !empty(l:parameter_doc)
                 call add(l:contents, '')
@@ -73,7 +85,7 @@ function! s:handle_signature_help(server, data) abort
             endif
         endif
 
-        if has_key(l:signature, 'documentation')
+        if has_key(l:signature, 'documentation') && ! get(g:, 'lsp_signature_help_label_only', 0)
             call add(l:contents, l:signature['documentation'])
         endif
 
@@ -124,6 +136,9 @@ function! s:on_cursor_moved() abort
 endfunction
 
 function! s:on_text_changed_after(bufnr, timer) abort
+    if s:suppressed
+        return
+    endif
     if bufnr('%') != a:bufnr
         return
     endif
@@ -152,6 +167,7 @@ function! lsp#ui#vim#signature_help#setup() abort
     augroup _lsp_signature_help_
         autocmd!
         autocmd CursorMoved,CursorMovedI * call s:on_cursor_moved()
+        autocmd ModeChanged *:n let s:suppressed = 0
     augroup END
 endfunction
 

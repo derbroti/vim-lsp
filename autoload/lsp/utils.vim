@@ -299,32 +299,31 @@ function! lsp#utils#warning(msg) abort
     echohl NONE
 endfunction
 
-
 function! lsp#utils#echo_with_truncation_and_highlight(msg, hl_group) abort
-    let l:msg = a:msg
-
     if &laststatus == 0 || (&laststatus == 1 && tabpagewinnr(tabpagenr(), '$') == 1)
         let l:winwidth = winwidth(0)
-
-        if &ruler
-            let l:winwidth -= 18
-        endif
+        if &ruler | let l:winwidth -= 18 | endif
     else
         let l:winwidth = &columns
     endif
+    if &showcmd | let l:winwidth -= 12 | endif
 
-    if &showcmd
-        let l:winwidth -= 12
-    endif
+    let l:indicator = get(g:, 'lsp_message_truncation_expansion_help_text', '…')
+    let l:indicator_width = strdisplaywidth(l:indicator)
 
-    if l:winwidth > 5 && l:winwidth < strdisplaywidth(l:msg)
-        let l:msg = l:msg[:l:winwidth - 5] . '...'
-    endif
+    let l:msg = !empty(a:hl_group) ? 'echohl ' . a:hl_group . '|' : ''
+    let s:lsp_last_message_command = l:msg . 'echon ' . string(a:msg) . '|echohl None'
 
-    if !empty(a:hl_group)
-        exec 'echohl ' . a:hl_group . ' | echo l:msg | echohl None'
+    if l:winwidth > l:indicator_width && l:winwidth < strdisplaywidth(a:msg)
+        execute l:msg . 'echon "' . strcharpart(a:msg, 0, l:winwidth - l:indicator_width) . '"|echohl None|echon "' . l:indicator . '"'
     else
-        exec 'echo l:msg'
+        execute s:lsp_last_message_command
+    endif
+endfunction
+
+function! lsp#utils#expand_last_message() abort
+    if exists('s:lsp_last_message_command')
+        execute s:lsp_last_message_command
     endif
 endfunction
 

@@ -309,8 +309,6 @@ function! s:handle_location(ctx, server, type, data) abort "ctx = {counter, list
         if empty(a:ctx['list'])
             call lsp#utils#error('No ' . a:type .' found')
         else
-            call lsp#utils#tagstack#_update()
-
             let l:loc = a:ctx['list'][0]
 
             if len(a:ctx['list']) == 1 && a:ctx['jump_if_one'] && !a:ctx['in_preview']
@@ -318,6 +316,7 @@ function! s:handle_location(ctx, server, type, data) abort "ctx = {counter, list
                 " echo 'Retrieved ' . a:type
                 redraw
             elseif !a:ctx['in_preview']
+                let l:tagname = expand('<cword>')
                 if get(a:ctx, 'add_tree', v:false)
                     let l:qf = getqflist({'idx' : 0, 'items': []})
                     let l:pos = l:qf.idx
@@ -326,6 +325,7 @@ function! s:handle_location(ctx, server, type, data) abort "ctx = {counter, list
                     let a:ctx['list'] = extend(l:parent, map(a:ctx['list'], 'extend(v:val, {"text": repeat("' . g:lsp_tree_incoming_prefix . '", l:level+1) . v:val.text})'), l:pos)
                 endif
                 call lsp#ui#vim#utils#setqflist(a:ctx['list'], a:type)
+                call lsp#utils#tagstack#_defer(getqflist({'id': 0})['id'], l:tagname)
                 echo 'Retrieved ' . a:type
                 botright copen
                 if get(a:ctx, 'add_tree', v:false)

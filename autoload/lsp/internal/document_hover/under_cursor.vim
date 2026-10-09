@@ -178,7 +178,7 @@ function! s:show_floating_window(server_name, request, response) abort
         \   'col': l:pos[1],
         \   'width': l:size.width,
         \   'height': l:size.height,
-        \   'border': v:true,
+        \   'border': v:true
         \ })
     call s:Window.do(l:doc_win.get_winid(), { -> s:Markdown.apply() })
 
@@ -227,6 +227,11 @@ function! s:get_contents(contents) abort
     endif
 endfunction
 
+function! lsp#internal#document_hover#under_cursor#close_floating_window() abort
+    let l:win = s:get_doc_win()
+    if l:win.is_visible() | call l:win.close() | endif
+endfunction
+
 function! s:close_floating_window() abort
     call s:get_doc_win().close()
 endfunction
@@ -263,6 +268,7 @@ function! s:get_doc_win() abort
     call s:doc_win.set_bufnr(s:Buffer.create())
     call setbufvar(s:doc_win.get_bufnr(), '&buftype', 'nofile')
     call setbufvar(s:doc_win.get_bufnr(), '&bufhidden', 'hide')
+    call setbufvar(s:doc_win.get_bufnr(), '&filetype', 'myLSPhover')
     call setbufvar(s:doc_win.get_bufnr(), '&buflisted', 0)
     call setbufvar(s:doc_win.get_bufnr(), '&swapfile', 0)
     return s:doc_win
